@@ -20,6 +20,10 @@ library(tidyverse)
 library(ggridges)
 ```
 
+—set the size and scale of plots in md shown up
+
+knitr::opts_chunk\$set( fig.width = 6, fig.asp = .6, out.width = “90%” )
+
 Get the data for plotting today.
 
 ``` r
@@ -248,3 +252,46 @@ ggplot(weather_df, aes(x = tmax, y=name))+
     ## (`stat_density_ridges()`).
 
 ![](Viz-part-1_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+
+## saving and embedding plots
+
+``` r
+ggp_weather =
+  weather_df |> 
+  ggplot(aes(x=tmin,y=tmax))+
+  geom_point()
+
+ggp_weather
+```
+
+    ## Warning: Removed 17 rows containing missing values (`geom_point()`).
+
+![](Viz-part-1_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+
+``` r
+ggsave("resulted plots/ggp_weather.pdf", ggp_weather)
+```
+
+    ## Saving 7 x 5 in image
+
+    ## Warning: Removed 17 rows containing missing values (`geom_point()`).
+
+change the scale of plot (#for md shown after git)
+
+``` r
+ggp_weather
+```
+
+    ## Warning: Removed 17 rows containing missing values (`geom_point()`).
+
+![](Viz-part-1_files/figure-gfm/fig.height==12-1.png)<!-- -->
+
+(#fig.asp=0.6, a little bit wider than its height)
+
+``` r
+ggp_weather
+```
+
+    ## Warning: Removed 17 rows containing missing values (`geom_point()`).
+
+![](Viz-part-1_files/figure-gfm/fig.asp==6-1.png)<!-- -->
