@@ -54,3 +54,45 @@ ggp_nyc_weather =
 
 ## Fancy plot
 
+```{r}
+ggplot(weather_df, aes(x = tmin, y = tmax)) + # if color here, then work for the whole command
+  geom_point(aes(color = name, alpha = 0.3))+ # if put color here then no color for smooth,alpha uses to change opqueness and solidness
+  geom_smooth(se = FALSE) #by add standard error=FALSE, get rid of error bars,grey area
+```
+
+
+Plot with facets
+
+```{r}
+ggplot(weather_df, aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(se = FALSE)+
+  facet_grid(. ~ name) #one pannel in each name variable, central_park...; .put everything in one row, and then separate variable according to name variable according to columns;if name ~.,then 3 rows 1 column
+```
+
+Let's try a different plot.temps are boring
+
+```{r}
+ggplot(weather_df, aes(x = date, y = tmax, color = name))+
+  geom_point(aes(size = prcp),alpha = 0.3) + #higher prcp variable have bigger points
+  geom_smooth()+
+  facet_grid(. ~ name)
+```
+
+
+try assigning specific color(#not usually do so, usually assign by default as the previous chunk)
+
+```{r}
+weather_df |> 
+  filter(name == "CentralPark_NY") |> 
+  ggplot(aes(x = date, y = tmax))+ #doing color=blue does not work here
+  geom_point(color="blue",alpha=0.7, size=0.5)  #assign color in geom_point function
+```
+
+
+```{r}
+weather_df |> 
+  filter(name != "CentralPark_NY") |> 
+  ggplot(aes(x = date, y = tmax,color = name))+ 
+  geom_point(alpha=0.7, size=0.5)  #size&alpha we usually set?
+```
