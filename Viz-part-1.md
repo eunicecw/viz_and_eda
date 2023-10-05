@@ -160,3 +160,91 @@ weather_df |>
     ## Warning: Removed 17 rows containing missing values (`geom_point()`).
 
 ![](Viz-part-1_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+hex plot
+
+``` r
+weather_df |> 
+  ggplot(aes(x = tmin, y =tmax))+
+  geom_hex() #install a package doing density plots;if you have many data over 1000,try do this density plot,each plot occupies some space
+```
+
+    ## Warning: Removed 17 rows containing non-finite values (`stat_binhex()`).
+
+![](Viz-part-1_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+Line plot
+
+``` r
+weather_df |> 
+  filter(name == "Molokai_HI") |> 
+  ggplot(aes(x=date, y =tmax)) +
+  geom_line(alpha=0.5) +
+  geom_point(size=0.5)
+```
+
+    ## Warning: Removed 1 rows containing missing values (`geom_point()`).
+
+![](Viz-part-1_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+## univariate plotting
+
+only look at one variable easy way to do so histogram
+
+``` r
+ggplot(weather_df, aes(x = tmax,fill= name))+ #if use color,outside the bar;here we use fill, fill in the bar with color
+  geom_histogram(position = "dodge") #it means bars should avoid each other, not on top of each other
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 17 rows containing non-finite values (`stat_bin()`).
+
+![](Viz-part-1_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+
+let’s use a density plot (smooth histogram)
+
+``` r
+ggplot(weather_df, aes(x = tmax,fill= name)) +
+    geom_density(alpha = 0.3, adjust = 0.75) #adjust-- make smoother
+```
+
+    ## Warning: Removed 17 rows containing non-finite values (`stat_density()`).
+
+![](Viz-part-1_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+using boxplots!
+
+``` r
+ggplot(weather_df, aes(y = tmax, x=name))+
+  geom_boxplot()
+```
+
+    ## Warning: Removed 17 rows containing non-finite values (`stat_boxplot()`).
+
+![](Viz-part-1_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+
+violin plots?(all info same as density plot, but order vertically)
+
+``` r
+ggplot(weather_df, aes(y = tmax, x=name))+
+  geom_violin()
+```
+
+    ## Warning: Removed 17 rows containing non-finite values (`stat_ydensity()`).
+
+![](Viz-part-1_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+
+ridge plot (crate 3 density, but seprate not overlapping on each top)
+
+``` r
+ggplot(weather_df, aes(x = tmax, y=name))+
+  geom_density_ridges()
+```
+
+    ## Picking joint bandwidth of 1.54
+
+    ## Warning: Removed 17 rows containing non-finite values
+    ## (`stat_density_ridges()`).
+
+![](Viz-part-1_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->

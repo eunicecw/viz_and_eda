@@ -96,3 +96,58 @@ weather_df |>
   ggplot(aes(x = date, y = tmax,color = name))+ 
   geom_point(alpha=0.7, size=0.5)  #size&alpha we usually set?
 ```
+
+hex plot
+```{r}
+weather_df |> 
+  ggplot(aes(x = tmin, y =tmax))+
+  geom_hex() #install a package doing density plots;if you have many data over 1000,try do this density plot,each plot occupies some space
+```
+
+Line plot
+```{r}
+weather_df |> 
+  filter(name == "Molokai_HI") |> 
+  ggplot(aes(x=date, y =tmax)) +
+  geom_line(alpha=0.5) +
+  geom_point(size=0.5)
+```
+
+
+## univariate plotting
+only look at one variable
+easy way to do so histogram
+
+```{r}
+ggplot(weather_df, aes(x = tmax,fill= name))+ #if use color,outside the bar;here we use fill, fill in the bar with color
+  geom_histogram(position = "dodge") #it means bars should avoid each other, not on top of each other
+```
+
+let's use a density plot (smooth histogram)
+
+```{r}
+ggplot(weather_df, aes(x = tmax,fill= name)) +
+    geom_density(alpha = 0.3, adjust = 0.75) #adjust-- make smoother
+```
+
+using boxplots!
+
+```{r}
+ggplot(weather_df, aes(y = tmax, x=name))+
+  geom_boxplot()
+```
+
+violin plots?(all info same as density plot, but order vertically)
+
+```{r}
+ggplot(weather_df, aes(y = tmax, x=name))+
+  geom_violin()
+```
+
+ridge plot (crate 3 density, but seprate not overlapping on each top)
+
+```{r}
+ggplot(weather_df, aes(x = tmax, y=name))+
+  geom_density_ridges()
+```
+
