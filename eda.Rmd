@@ -1,0 +1,141 @@
+---
+title: "EDA: Numeric summaries"
+output: github_document
+---
+
+```{r}
+library(tidyverse)
+```
+
+---set the size and scale of plots in md shown up 
+
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+
+Get the data for plotting today.
+
+```{r}
+weather_df = 
+  rnoaa::meteo_pull_monitors(
+    c("USW00094728", "USW00022534", "USS0023B17S"),
+    var = c("PRCP", "TMIN", "TMAX"), 
+    date_min = "2021-01-01",
+    date_max = "2022-12-31") |>
+  mutate(
+    name = recode(
+      id, 
+      USW00094728 = "CentralPark_NY", 
+      USW00022534 = "Molokai_HI",
+      USS0023B17S = "Waterhole_WA"),
+    tmin = tmin / 10,
+    tmax = tmax / 10, 
+    month =lubridate::floor_date(date,unit="month"))|> # take the date and round to the smallest data of month, get a month variable, eg Feb 6th to Feb 1st, Jan 21st to Jan 1st
+  select(name, id, everything())
+```
+
+
+## Initial numeric work
+
+```{r}
+weather_df |> 
+  ggplot(aes(x=prcp)) +
+  geom_histogram()
+```
+
+here are big outliers
+
+```{r}
+weather_df |> 
+  filter(prcp>1000)
+```
+
+```{r}
+weather_df |> 
+  filter(tmax>=20,tmax<=30) |> 
+  ggplot(aes(x=tmin,tmax,color=name))+
+  geom_point()
+```
+
+## Grouping
+
+```{r}
+weather_df |> 
+  group_by(name,month)   #maybe invisible to see
+```
+
+
+## Counting
+
+```{r}
+weather_df |> 
+  group_by(name,month) |> 
+  summarize(n_obs = n()) #give me the # of observations
+```
+
+
+```{r}
+weather_df |> 
+  group_by(month) |> 
+  summarize(n_obs = n())
+```
+
+if we don't group, we can use only the count function
+```{r}
+weather_df |> 
+  count(name, name="n_obs") # you can also rename that column
+```
+
+```{r}
+weather_df |> 
+  count(name, month) |> 
+  pivot_wider(
+    names_from = name,
+    values_from = n
+  )
+```
+
+
+## General summaries
+
+```{r}
+weather_df |> 
+  group_by(name) |> 
+  summarize(
+    mean_tmax=mean(tmax, na.rm =TRUE) #drop missing values, or you can do drop na at the beginning
+  )
+```
+
+```{r}
+weather_df |> 
+  group_by(name,month) |> 
+  summarize(
+    mean_tmax=mean(tmax, na.rm =TRUE) ,
+    median_tmax = median(tmax, na.rm = TRUE),
+    sd_tmax = sd(tmax, na.rm = TRUE)
+  )
+```
+
+```{r}
+weather_df |> 
+  group_by(name, month) |> 
+  summarize(mean_tmax = mean(tmax, na.rm =TRUE)) |> 
+  ggplot(aes(x=month, y=mean_tmax, color=name)) +
+  geom_point()+
+  geom_line()
+```
+
+from the above only see plots, but if we want to see the df, we can do it again and group it 
+```{r}
+weather_df |> 
+  group_by(name, month) |> 
+  summarize(mean_tmax = mean(tmax, na.rm =TRUE)) |> 
+  pivot_wider(
+    names_from = name,
+    values_from = mean_tmax
+  ) |> 
+  knitr::kable(digits=2) # round up to 2 digits
+```
+
